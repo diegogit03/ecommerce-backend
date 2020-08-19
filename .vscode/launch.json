@@ -8,9 +8,6 @@
             "type": "node",
             "request": "launch",
             "name": "Debug",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
             "runtimeExecutable": "npm",
             "runtimeArgs": ["run", "dev"],
             "port": 9229,
