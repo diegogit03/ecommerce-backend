@@ -10,7 +10,7 @@ class OrderItemSchema extends Schema {
       table.integer('product_id').unsigned()
       table.integer('quantity').unsigned()
       table.decimal('subtotal', 12, 2)
-      table.integer('order_id')
+      table.integer('order_id').unsigned()
 
       table
         .foreign('product_id')
