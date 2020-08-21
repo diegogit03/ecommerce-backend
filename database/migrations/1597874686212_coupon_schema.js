@@ -3,9 +3,9 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
-class CounponSchema extends Schema {
+class CouponSchema extends Schema {
   up () {
-    this.create('counpons', (table) => {
+    this.create('coupons', (table) => {
       table.increments()
       table.string('code', 100).notNullable()
       table.dateTime('valid_from')
@@ -20,8 +20,8 @@ class CounponSchema extends Schema {
   }
 
   down () {
-    this.drop('counpons')
+    this.drop('coupons')
   }
 }
 
-module.exports = CounponSchema
+module.exports = CouponSchema

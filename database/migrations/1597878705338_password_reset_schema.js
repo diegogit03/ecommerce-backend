@@ -11,7 +11,6 @@ class PasswordResetSchema extends Schema {
       table.string('token').notNullable().unique()
 
       table.dateTime('expires_at')
-
       table.timestamps()
 
       table
