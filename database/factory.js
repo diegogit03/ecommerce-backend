@@ -12,7 +12,7 @@
 */
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
-// const Factory = use('Factory')
+const Factory = use('Factory')
 
 Factory.blueprint('App/Models/User', faker => {
   return {
@@ -21,14 +21,14 @@ Factory.blueprint('App/Models/User', faker => {
      email: faker.email({ domain: 'fsocietybrasil.org' }),
      password: 'secret'
   }
-});
+})
 
 Factory.blueprint('App/Models/Category', faker => {
   return {
     title: faker.country({ full: true }),
     description: faker.sentence(),
   }
-});
+})
 
 Factory.blueprint('App/Models/Product', faker => {
   return {
@@ -36,4 +36,4 @@ Factory.blueprint('App/Models/Product', faker => {
     description: faker.sentence(),
     price: faker.float({ min: 0, max: 1000, fixed: 2 })
   }
-});
+})
