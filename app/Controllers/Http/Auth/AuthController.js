@@ -50,7 +50,7 @@ class AuthController {
       refresh_token = request.header('refresh_token')
     }
 
-    const user = await auth.newRefreshToken().generate(refresh_token)
+    const user = await auth.newRefreshToken().generateForRefreshToken(refresh_token)
 
     return response.send({
       data: user
