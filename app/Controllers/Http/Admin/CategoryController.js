@@ -81,13 +81,13 @@ class CategoryController {
    * @param {Response} ctx.response
    */
   async update ({ params: { id }, request, response }) {
-    const category = Category.findOrFail(id)
+    const category = await Category.findOrFail(id)
     const { title, description, image_id } = request.all()
 
     category.merge({ title, description, image_id })
     await category.save()
 
-    return response.send(category)
+    return response.status(200).send(category)
   }
 
   /**
