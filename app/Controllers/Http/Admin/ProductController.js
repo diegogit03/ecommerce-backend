@@ -49,7 +49,7 @@ class ProductController {
         image_id
       })
       return response.status(201).send(product)
-    } catch {
+    } catch(error) {
       response.status(400).send({ message: 'Não foi possivel criar o produto neste momento' })
     }
   }
@@ -63,7 +63,10 @@ class ProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response }) {
+  async show ({ params: { id }, request, response }) {
+    const product = await Product.findOrFail(id)
+
+    return response.send(product)
   }
 
   /**
@@ -74,7 +77,16 @@ class ProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params: { id }, request, response }) {
+    const product = await Product.findOrFail(id)
+
+    try {
+      const { name, description, price, image_id } = request.all()
+      product.merge({ name, description, price, image_id })
+      await product.save()
+    } catch(error) {
+      return response.status(400).send({ message: 'Não foi possivel atualizar este produto!' })
+    }
   }
 
   /**
