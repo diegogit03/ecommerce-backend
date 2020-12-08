@@ -97,7 +97,15 @@ class ProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params: { id }, request, response }) {
+    const product = await Product.findOrFail(id)
+
+    try {
+      await product.delete()
+      return response.status(204).send()
+    } catch(error) {
+      return response.status(500).send({ message: 'Não foi possivel deletar o produto!' })
+    }
   }
 }
 
