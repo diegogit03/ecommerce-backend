@@ -17,7 +17,16 @@ class ProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index ({ request, response, pagination }) {
+    const name = request.input('name')
+    const query = request.query()
+
+    if (name) {
+      query.where('name', 'LIKE', `%${name}%`)
+    }
+
+    const products = await query.paginate(pagination.page, pagination.limit)
+    return response.send(products)
   }
 
   /**
@@ -40,7 +49,7 @@ class ProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params, request, response }) {
   }
 
   /**
