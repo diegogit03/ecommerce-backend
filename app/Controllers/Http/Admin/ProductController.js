@@ -4,6 +4,8 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Product = use('App/Models/Product')
+
 /**
  * Resourceful controller for interacting with products
  */
@@ -19,7 +21,7 @@ class ProductController {
    */
   async index ({ request, response, pagination }) {
     const name = request.input('name')
-    const query = request.query()
+    const query = Product.query()
 
     if (name) {
       query.where('name', 'LIKE', `%${name}%`)
@@ -41,10 +43,10 @@ class ProductController {
   }
 
   /**
-   * Display a single product.
    * GET products/:id
    *
    * @param {object} ctx
+   * Display a single product.
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    * @param {View} ctx.view
