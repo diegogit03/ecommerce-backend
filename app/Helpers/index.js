@@ -60,7 +60,7 @@ const manage_multiple_uploads = async (fileJar, path = null) => {
     errors = []
 
   await Promise.all(fileJar.files.map(async file => {
-    let random_name = await str_random(30)
+    let randomName = await str_random(30)
     let filename = `${new Date().getTime()}-${randomName}.${file.subtype}`
     // move o arquivo
     await file.move(path, {
@@ -79,5 +79,7 @@ const manage_multiple_uploads = async (fileJar, path = null) => {
 }
 
 module.exports = {
-  str_random
+  str_random,
+  image_single_upload,
+  manage_multiple_uploads
 }
