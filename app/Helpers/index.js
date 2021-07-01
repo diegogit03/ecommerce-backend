@@ -33,7 +33,7 @@ const str_random = async (length = 40) => {
  * @param { string } path - o caminho para onde o arquivo dever ser movido
  * @return { Object<FileJar> }
  */
-const image_single_upload = async (file, path = null) => {
+const manage_single_upload = async (file, path = null) => {
   path = path ? path : Helpers.publicPath('uploads')
   // gera um nome aleatorio
   const random_name = await str_random(30)
@@ -80,6 +80,6 @@ const manage_multiple_uploads = async (fileJar, path = null) => {
 
 module.exports = {
   str_random,
-  image_single_upload,
+  manage_single_upload,
   manage_multiple_uploads
 }
