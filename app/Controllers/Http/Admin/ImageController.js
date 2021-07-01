@@ -5,8 +5,8 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Image = use('App/Models/Image')
-
 const { manage_single_upload, manage_multiple_upload } = use('App/Models/Image')
+const fs = use('fs')
 
 /**
  * Resourceful controller for interacting with images
@@ -131,7 +131,22 @@ class ImageController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params: { id }, request, response }) {
+    const image = await Image.findOrFail(id)
+    try {
+      let filepath = Helpers.publicPath(`uploads/${image.path}`)
+
+      await fs.unlink(filepath, err => {
+        if(!err)
+          await Image.delete()
+      })
+
+      return response.status(204).send()
+    } catch(error) {
+      return response.status(400).send({
+        message: 'Não foi possivel deletar a imagem no momento'
+      })
+    }
   }
 }
 
