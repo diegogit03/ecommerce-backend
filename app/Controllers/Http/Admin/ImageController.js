@@ -96,9 +96,10 @@ class ImageController {
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params: { id } }) {
+    const image = await Image.findOrFail(id)
+    return image
   }
 
   /**
