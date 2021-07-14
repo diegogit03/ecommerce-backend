@@ -6,6 +6,8 @@
 
 const Order = use('App/Models/Order')
 
+const Database = use('App/Models/Database')
+
 /**
  * Resourceful controller for interacting with orders
  */
@@ -78,7 +80,20 @@ class OrderController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params: { id }, request, response }) {
+    const order = await Order.findOrFail(id)
+    const trx = await Database.beginTransaction()
+    try {
+      await order.items().delete(trx)
+      await order.coupons().delete()
+      await order.delete()
+      await trx.commit()
+      return response.status(204).send()
+    } catch (error) {
+      return response.status(400).json({
+        message: 'Erro ao deletar este pedido!'
+      })
+    }
   }
 }
 
