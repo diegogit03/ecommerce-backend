@@ -1,8 +1,7 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+/** @typedef {typeof import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {typeof import('@adonisjs/framework/src/Response')} Response */
 
 const Category = use('App/Models/Category')
 
@@ -16,11 +15,9 @@ class CategoryController {
    *
    * @param {object} ctx
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
    * @param {object} ctx.pagination
    */
-  async index ({ request, response, pagination }) {
+  async index ({ request, pagination }) {
     const title = request.input('title')
     const query = Category.query()
 
@@ -33,7 +30,7 @@ class CategoryController {
       pagination.limit
     )
 
-    return response.send(categories)
+    return categories
   }
 
   /**
@@ -64,9 +61,8 @@ class CategoryController {
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async show ({ params: { id } ,request, response }) {
+  async show ({ params: { id } , response }) {
     const category = await Category.findOrFail(id)
 
     return response.send(category)
@@ -95,10 +91,9 @@ class CategoryController {
    * DELETE categories/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params: { id }, request, response }) {
+  async destroy ({ params: { id }, response }) {
     const category = await Category.findOrFail(id)
     await category.delete()
 

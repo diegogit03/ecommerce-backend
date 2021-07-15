@@ -5,7 +5,8 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Image = use('App/Models/Image')
-const { manage_single_upload, manage_multiple_upload } = use('App/Models/Image')
+const { manage_single_upload, manage_multiple_upload } = use('App/Helpers')
+
 const fs = use('fs')
 
 /**
@@ -45,7 +46,6 @@ class ImageController {
         size: '2mb'
       })
 
-      // retorno pro usuario
       let images = []
       // caso seja um unico arquivo - manage_single_upload
       // caso seja vários arquivos - manage_multiple_upload
