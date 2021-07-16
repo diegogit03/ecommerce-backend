@@ -1,5 +1,8 @@
 'use strict'
 
+/** @type {import('@adonisjs/lucid/src/Database')} */
+const Database = use('Database')
+
 class OrderService {
   constructor(model, trx) {
     this.model = model;
@@ -7,7 +10,8 @@ class OrderService {
   }
 
   async syncItems(items) {
-    if(!Array.isArray(items)) return false;
+    if(!Array.isArray(items))
+      return false;
 
     await this.model.items().delete(this.trx)
     await this.model.items().createMany(items, this.trx)
@@ -30,6 +34,94 @@ class OrderService {
       item.fill(items.find(n => n.id === item.id))
       await item.save(this.trx)
     }))
+  }
+
+  async canApplyDiscount(coupon) {
+    const couponProducts = await Database.from('coupon_products')
+      .where('coupon_id', coupon.id)
+      .pluck('product_id')
+
+    const couponClients = await Database.from('coupon_user')
+      .where('coupon_id', coupon.id)
+      .pluck('user_id')
+
+    // verificar se o cupom está associado a produtos e clientes especifícos
+    if(
+      Array.isArray(couponProducts) &&
+      couponClients.length < 1 &&
+      Array.isArray(couponClients) &&
+      couponClients.length < 1
+    ) {
+      /**
+       * Caso não esteja associado a cliente ou produto especifico, é de uso livre
+       */
+      return true
+    }
+
+    let isAssociatedToProducts,
+      isAssociatedToClients = false
+
+    if(Array.isArray(couponProducts) && couponProducts.length > 0) {
+      isAssociatedToProducts = true
+    }
+
+    if(Array.isArray(couponClients) && couponClients.length > 0) {
+      isAssociatedToClients = true
+    }
+
+    const productsMatch = await Database.from('order_items')
+      .where('order_id', this.model.id)
+      .whereIn('product_id', coupon)
+      .pluck('product_id')
+
+    /**
+     * Caso de uso 1 - o cupom está associado a clientes & produtos
+     */
+    if(isAssociatedToClients && isAssociatedToClients) {
+      const clientMatch = couponClients.find(
+        client => client === this.model.user_id
+      )
+
+      if(
+        clientMatch &&
+        Array.isArray(productsMatch) &&
+        productsMatch.length > 0
+      ) {
+        return true;
+      }
+    }
+
+    /**
+     * Caso de uso 2 - o cupom está associado apenas a produto
+     */
+    if(
+      isAssociatedToProducts &&
+      Array.isArray(productsMatch) &&
+      productsMatch.length > 0
+    ) {
+      return true
+    }
+
+    /**
+     * Caso de uso 3 - o cupom está associado a 1 ou mais clientes (e nenhum produto)
+     */
+    if(
+      isAssociatedToClients &&
+      Array.isArray(couponClients) &&
+      couponClients.length > 0
+    ) {
+      const match = couponClients(client => client === this.model.user_id)
+      if(match)
+        return true;
+    }
+
+    /**
+     * Caso nenhuma das verificação acima deem positivas
+     * então o cupom está associado a clientes ou produtos ou os dois
+     * porém nenhum dos produtos deste pedido está elegivel ao desconto
+     * e o cliente fez a compra também não poderá utilizar este cupom
+     */
+    return false
   }
 }
 
