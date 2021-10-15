@@ -49,4 +49,15 @@ DiscountHook.calculateValues = async model => {
       }
       break;
   }
+
+  return model
+}
+
+// Decrementa a quantidade de cupons disponiveis pra uso
+DiscountHook.decrementCoupons = async model => {
+  const query = Database.from('coupons')
+  if (model.$transaction) {
+    query.transaction(model.$transaction)
+  }
+  await query.where('id', model.coupon_id).decrement('quantity', 1)
 }
