@@ -16,3 +16,4 @@ Route.group(() => {
 })
   .prefix('v1/auth')
   .namespace('Auth')
+  .middleware(['guest'])
