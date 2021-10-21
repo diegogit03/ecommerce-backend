@@ -7,7 +7,10 @@ Route.group(() => {
   /*
   * Category resource routes
   */
-  Route.resource('categories', 'CategoryController').apiOnly()
+  Route.resource('categories', 'CategoryController').apiOnly().validator(new Map([
+    [['categories.store'], ['Admin/StoreCategory']],
+    [['categories.update'], ['Admin/StoreCategory']]
+  ]))
 
   /*
   * Product resource routes
