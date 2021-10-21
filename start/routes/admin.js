@@ -34,7 +34,10 @@ Route.group(() => {
   /*
   * Image resource routes
   */
-  Route.resource('image', 'ImageController').apiOnly()
+  Route.resource('image', 'ImageController').apiOnly().validator(new Map(
+    [['users.store'], ['Admin/StoreUser']],
+    [['users.update'], ['Admin/StoreUser']]
+  ))
 
   /*
   * User resource routes
