@@ -39,7 +39,7 @@ class OrderController {
       query.orWhere('id', 'LIKE', `%${id}%`)
     }
 
-    const orders = query.paginate(pagination.page, pagination.limit)
+    const orders = await query.paginate(pagination.page, pagination.limit)
     return response.json(orders)
   }
 
