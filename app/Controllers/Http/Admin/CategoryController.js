@@ -4,6 +4,7 @@
 /** @typedef {typeof import('@adonisjs/framework/src/Response')} Response */
 
 const Category = use('App/Models/Category')
+const CategoryTransformer = use('App/Transformers/Admin/CategoryTransformer')
 
 /**
  * Resourceful controller for interacting with categories
@@ -15,9 +16,10 @@ class CategoryController {
    *
    * @param {object} ctx
    * @param {Request} ctx.request
+   * @param {TransformWith} ctx.transform
    * @param {object} ctx.pagination
    */
-  async index ({ request, pagination }) {
+  async index ({ request, transform, pagination }) {
     const title = request.input('title')
     const query = Category.query()
 
@@ -25,10 +27,12 @@ class CategoryController {
       query.where('title', 'LIKE', `%${title}%`)
     }
 
-    const categories = await query.paginate(
+    let categories = await query.paginate(
       pagination.page,
       pagination.limit
     )
+
+    categories = await transform.paginate(categories, CategoryTransformer)
 
     return categories
   }
@@ -40,11 +44,14 @@ class CategoryController {
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
+   * @param {TransformWith} ctx.transform
    */
-  async store ({ request, response }) {
+  async store ({ request, response, transform }) {
     try {
       const { title, description, image_id } = request.all()
-      const category = await Category.create({ title, description, image_id })
+      let category = await Category.create({ title, description, image_id })
+
+      category = await transform.item(category, CategoryTransformer)
 
       return response.status(201).send(category)
     } catch(error) {
@@ -59,11 +66,13 @@ class CategoryController {
    * GET categories/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
+   * @param {TransformWith} ctx.transform
    * @param {Response} ctx.response
    */
-  async show ({ params: { id } , response }) {
-    const category = await Category.findOrFail(id)
+  async show ({ params: { id }, transform, response }) {
+    let category = await Category.findOrFail(id)
+
+    category = await transform.item(category, CategoryTransformer)
 
     return response.send(category)
   }
@@ -77,11 +86,13 @@ class CategoryController {
    * @param {Response} ctx.response
    */
   async update ({ params: { id }, request, response }) {
-    const category = await Category.findOrFail(id)
+    let category = await Category.findOrFail(id)
     const { title, description, image_id } = request.all()
 
     category.merge({ title, description, image_id })
     await category.save()
+
+    category = await transform.item(category, CategoryTransformer)
 
     return response.status(200).send(category)
   }

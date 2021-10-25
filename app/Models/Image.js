@@ -5,14 +5,14 @@ const Model = use('Model')
 const Env = use('Env')
 
 class Image extends Model {
-    
+
     static get computed(){
-        return ['url']
+      return ['url']
     }
 
     getUrl({ path }){
 
-        return `${Env.get('APP_URL')}/images/${path}`
+      return `${Env.get('APP_URL')}/images/${path}`
 
     }
 
