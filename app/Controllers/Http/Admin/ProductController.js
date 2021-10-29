@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Product = use('App/Models/Product')
+const ProductTransformer = use('App/Transformers/Admin/ProductTransformer')
 
 /**
  * Resourceful controller for interacting with products
@@ -19,7 +20,7 @@ class ProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, pagination }) {
+  async index ({ request, response, pagination, transform }) {
     const name = request.input('name')
     const query = Product.query()
 
@@ -27,7 +28,9 @@ class ProductController {
       query.where('name', 'LIKE', `%${name}%`)
     }
 
-    const products = await query.paginate(pagination.page, pagination.limit)
+    let products = await query.paginate(pagination.page, pagination.limit)
+    products = await transform.paginate(products, ProductTransformer)
+
     return response.send(products)
   }
 
@@ -39,15 +42,18 @@ class ProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response, transform }) {
     try {
       const { name, description, price, image_id } = request.all()
-      const product = await Product.create({
+
+      let product = await Product.create({
         name,
         description,
         price,
         image_id
       })
+      product = await transform.item(product, ProductTransformer)
+
       return response.status(201).send(product)
     } catch(error) {
       response.status(400).send({ message: 'Não foi possivel criar o produto neste momento' })
@@ -63,8 +69,9 @@ class ProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params: { id }, request, response }) {
-    const product = await Product.findOrFail(id)
+  async show ({ params: { id }, transform, response }) {
+    let product = await Product.findOrFail(id)
+    product = await transform.item(product, ProductTransformer)
 
     return response.send(product)
   }
@@ -78,12 +85,14 @@ class ProductController {
    * @param {Response} ctx.response
    */
   async update ({ params: { id }, request, response }) {
-    const product = await Product.findOrFail(id)
+    let product = await Product.findOrFail(id)
 
     try {
       const { name, description, price, image_id } = request.all()
       product.merge({ name, description, price, image_id })
       await product.save()
+      product = await transform.item(product, ProductTransformer)
+      return product
     } catch(error) {
       return response.status(400).send({ message: 'Não foi possivel atualizar este produto!' })
     }
