@@ -4,12 +4,12 @@ const BumblebeeTransformer = use('Bumblebee/Transformer')
 const ImageTransformer = use('App/Transformers/Admin/ImageTransformer')
 
 /**
- * ProductTransformer class
+ * UserTransformer class
  *
- * @class ProductTransformer
+ * @class UserTransformer
  * @constructor
  */
-class ProductTransformer extends BumblebeeTransformer {
+class UserTransformer extends BumblebeeTransformer {
   defaultInclude () {
     return ['image']
   }
@@ -21,8 +21,8 @@ class ProductTransformer extends BumblebeeTransformer {
     return {
      id: model.id,
      name: model.name,
-     description: model.description,
-     price: model.price,
+     surname: model.surname,
+     email: model.email,
     }
   }
 
@@ -31,4 +31,4 @@ class ProductTransformer extends BumblebeeTransformer {
   }
 }
 
-module.exports = ProductTransformer
+module.exports = UserTransformer
