@@ -43,6 +43,8 @@ Route.group(() => {
   * User resource routes
   */
   Route.resource('users', 'UserController').apiOnly()
+
+  Route.get('dashboard', 'DashboardController.index').as('dashboard')
 })
   .prefix('v1/admin')
   .namespace('Admin')
