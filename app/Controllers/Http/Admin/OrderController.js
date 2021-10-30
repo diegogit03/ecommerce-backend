@@ -68,7 +68,8 @@ class OrderController {
 
       await trx.commit()
 
-      order = await transform.item(order, OrderTransformer)
+      order = await Order.find(order.id)
+      order = await transform.include('user,items').item(order, OrderTransformer)
 
       return response.status(201).json(order)
     } catch(error) {
@@ -88,7 +89,9 @@ class OrderController {
    */
   async show ({ params: { id }, response, transform }) {
     let order = await Order.findOrFail(id)
-    order = await transform.item(order, OrderTransformer)
+    order = await transform
+      .include('user,items,discounts')
+      .item(order, OrderTransformer)
 
     return response.json(order)
   }
@@ -115,7 +118,7 @@ class OrderController {
       await order.save()
       await trx.commit()
 
-      order = await transform.item(order, OrderTransformer)
+      order = await transform.include('user,items,discounts,coupons').item(order, OrderTransformer)
 
       return order
     } catch (error) {
@@ -179,7 +182,7 @@ class OrderController {
         info.success = false
       }
 
-      order = await transform.item(order, OrderTransformer)
+      order = await transform.include('user,items,discounts,coupons').item(order, OrderTransformer)
 
       return { order, info }
     } catch (error) {
