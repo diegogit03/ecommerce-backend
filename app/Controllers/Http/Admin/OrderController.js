@@ -88,7 +88,7 @@ class OrderController {
    */
   async show ({ params: { id }, response, transform }) {
     let order = await Order.findOrFail(id)
-    order = transform.item(order, OrderTransformer)
+    order = await transform.item(order, OrderTransformer)
 
     return response.json(order)
   }
