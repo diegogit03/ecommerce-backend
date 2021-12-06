@@ -37,7 +37,7 @@ const manage_single_upload = async (file, path = null) => {
   path = path ? path : Helpers.publicPath('uploads')
   // gera um nome aleatorio
   const random_name = await str_random(30)
-  let filename = `${new Date().getTime()}-${randomName}.${file.subtype}`
+  let filename = `${new Date().getTime()}-${random_name}.${file.subtype}`
 
   // renomeia o arquivo e move ele para o path
   await file.move(path, {
@@ -55,7 +55,7 @@ const manage_single_upload = async (file, path = null) => {
  * @return { Object }
  */
 const manage_multiple_uploads = async (fileJar, path = null) => {
-  const path = path ? path : Helpers.publicPath('uploads')
+  path = path ? path : Helpers.publicPath('uploads')
   let success = [],
     errors = []
 

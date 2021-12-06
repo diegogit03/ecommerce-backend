@@ -34,15 +34,15 @@ Route.group(() => {
   /*
   * Image resource routes
   */
-  Route.resource('image', 'ImageController').apiOnly().validator(new Map(
-    [['users.store'], ['Admin/StoreUser']],
-    [['users.update'], ['Admin/StoreUser']]
-  ))
+  Route.resource('images', 'ImageController').apiOnly()
 
   /*
   * User resource routes
   */
-  Route.resource('users', 'UserController').apiOnly()
+  Route.resource('users', 'UserController').apiOnly().validator(new Map(
+    [['users.store'], ['Admin/StoreUser']],
+    [['users.update'], ['Admin/StoreUser']]
+  ))
 
   Route.get('dashboard', 'DashboardController.index').as('dashboard')
 })
