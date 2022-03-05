@@ -17,13 +17,15 @@ const User = use('App/Models/User')
 
 class ClientSeeder {
   async run () {
-    const role = await Role.findBy('slug', 'client')
-    const Clients = await Factory.model('App/Models/User').createMany(20)
-    await Promise.all(
-      Clients.map(async client => {
-        await client.roles().attach([role.id])
-      })
-    )
+    if (process.env.NODE_ENV !== 'production') {
+      const role = await Role.findBy('slug', 'client')
+      const Clients = await Factory.model('App/Models/User').createMany(20)
+      await Promise.all(
+        Clients.map(async client => {
+          await client.roles().attach([role.id])
+        })
+      )
+    }
 
     const user = await User.create({
       name: 'Diego',
