@@ -16,6 +16,7 @@ class OrderSchema extends Schema {
         'paid', 
         'finished'
       ])
+      table.string('pay_id', 255)
       table.timestamps()
 
       table

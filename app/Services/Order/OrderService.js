@@ -18,6 +18,14 @@ class OrderService {
   }
 
   async updateItems(items) {
+    const newItems = items.filter(item => !item.id)
+
+    if (newItems.length) {
+      const result = await this.model.items().createMany(newItems, this.trx)
+      items = items.filter(item => item.id)
+      result.map(item => item.toJSON()).forEach(item => items.push(item))
+    }
+
     let currentItems = await this.model
       .items()
       .whereIn('id', items.map(item => item.id))

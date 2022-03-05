@@ -26,9 +26,9 @@ class CouponController {
    */
   async index ({ request, pagination, transform }) {
     const code = request.input('code')
-    const query = await Coupon.query()
+    const query = Coupon.query()
 
-    if(code) {
+    if (code) {
       query.where('code', 'LIKE', `%${code}%`)
     }
 

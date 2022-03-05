@@ -40,8 +40,8 @@ Route.group(() => {
   * User resource routes
   */
   Route.resource('users', 'UserController').apiOnly().validator(new Map(
-    [['users.store'], ['Admin/StoreUser']],
-    [['users.update'], ['Admin/StoreUser']]
+    [[['users.store'], ['Admin/StoreUser']]],
+    [[['users.update'], ['Admin/StoreUser']]]
   ))
 
   Route.get('dashboard', 'DashboardController.index').as('dashboard')

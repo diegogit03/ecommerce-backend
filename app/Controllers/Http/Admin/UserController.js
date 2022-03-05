@@ -30,10 +30,9 @@ class UserController {
     }
 
     let users = await query.paginate(pagination.page, pagination.limit)
-
     users = await transform.paginate(users, UserTransformer)
 
-    return response.send(users)
+    return users
   }
 
   /**
@@ -87,11 +86,11 @@ class UserController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params: { id }, transform, response }) {
+  async update ({ params: { id }, transform, response, request }) {
     let user = await User.findOrFail(id)
-    const userData = response.only([
+    const userData = request.only([
       'name',
-      'username',
+      'surname',
       'email',
       'password',
       'image_id'
@@ -102,7 +101,7 @@ class UserController {
 
     user = transform.item(user, UserTransformer)
 
-    return response.send(user)
+    return user
   }
 
   /**

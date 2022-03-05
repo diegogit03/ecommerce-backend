@@ -17,6 +17,7 @@
 const Route = use('Route')
 
 Route.get('v1/me', 'UserController.me').as('me').middleware('auth')
+Route.post('v1/pay/notification', 'Pay/NotificationController.store').as('me')
 
 /*
 * importa as rotas de Autenticação

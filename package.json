@@ -5,7 +5,7 @@
   "description": "Souza api",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "ENV_SILENT=true node server.js",
     "dev": "adonis serve --dev --debug",
     "test": "node ace test"
   },
@@ -30,7 +30,10 @@
     "@adonisjs/websocket": "^1.0.12",
     "adonis-acl": "^1.1.1",
     "adonis-bumblebee": "^2.2.0",
-    "mysql": "^2.18.1"
+    "mercadopago": "^1.5.12",
+    "moment": "^2.29.1",
+    "mysql": "^2.18.1",
+    "uuidv4": "^6.2.12"
   },
   "devDependencies": {},
   "autoload": {

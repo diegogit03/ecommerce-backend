@@ -19,7 +19,7 @@ class ProductController {
    * @param {Response} ctx.response
    */
   async index ({ request, pagination, transform }) {
-    const { title } = request.input('title')
+    const { title } = request.all()
 
     const query = Product.query()
 

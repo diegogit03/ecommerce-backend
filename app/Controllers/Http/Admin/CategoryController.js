@@ -85,7 +85,7 @@ class CategoryController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params: { id }, request, response }) {
+  async update ({ params: { id }, request, response, transform }) {
     let category = await Category.findOrFail(id)
     const { title, description, image_id } = request.all()
 

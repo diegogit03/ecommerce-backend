@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const fs = use('fs')
+const Helpers = use('Helpers')
 
 const Image = use('App/Models/Image')
 const { manage_single_upload, manage_multiple_upload } = use('App/Helpers')
@@ -28,7 +29,7 @@ class ImageController {
       .orderBy('id', 'DESC')
       .paginate(pagination.page, pagination.limit)
 
-    image = await transform.paginate(images, ImageTransformer)
+    images = await transform.paginate(images, ImageTransformer)
 
     return images
   }
@@ -147,10 +148,11 @@ class ImageController {
       let filepath = Helpers.publicPath(`uploads/${image.path}`)
 
       await fs.unlinkSync(filepath)
-      await Image.delete()
+      await image.delete()
 
       return response.status(204).send()
     } catch(error) {
+		console.log(error)
       return response.status(400).send({
         message: 'Não foi possivel deletar a imagem no momento'
       })

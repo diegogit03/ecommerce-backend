@@ -9,7 +9,7 @@ const Coupon = use('App/Models/Coupon')
 const Discount = use('App/Models/Discount')
 
 /** @type {import('@adonisjs/lucid/src/Database')} */
-const Database = use('App/Models/Database')
+const Database = use('Database')
 
 const Service = use('App/Services/Order/OrderService')
 const OrderTransformer = use('App/Transformers/Admin/OrderTransformer')
@@ -73,6 +73,7 @@ class OrderController {
 
       return response.status(201).json(order)
     } catch(error) {
+
       await trx.rollback()
       return response.status(400).json({
         message: 'Não foi possivel criar o pedido no momento!'
@@ -93,7 +94,7 @@ class OrderController {
       .include('user,items,discounts')
       .item(order, OrderTransformer)
 
-    return response.json(order)
+    return order
   }
 
   /**
@@ -122,6 +123,7 @@ class OrderController {
 
       return order
     } catch (error) {
+      console.log(error)
       await trx.rollback()
       return response.status(400).json({
         message: 'Não foi possivel atualizar este pedido no momento!'
