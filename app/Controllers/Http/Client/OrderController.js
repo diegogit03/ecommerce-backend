@@ -19,7 +19,7 @@ const OrderTransformer = use('App/Transformers/Admin/OrderTransformer')
 const Service = use('App/Services/Order/OrderService')
 
 MercadoPago.configure({
-  sandbox: Env.get('NODE_ENV') === 'production' ? false : true,
+  sandbox: Env.get('MP_ENV') === 'production' ? false : true,
   access_token: Env.get('MP_ACCESS_TOKEN')
 })
 
