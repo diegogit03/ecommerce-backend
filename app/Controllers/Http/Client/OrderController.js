@@ -100,7 +100,7 @@ class OrderController {
           description: 'Um Produto na Dog Pets',
           quantity: item.quantity,
           currency_id: 'BRL',
-          unit_price: product.price
+          unit_price: parseFloat(product.price)
         }
       })
 
