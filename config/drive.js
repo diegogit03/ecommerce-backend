@@ -13,7 +13,7 @@ module.exports = {
   | defining a disk name
   |
   */
-  default: 's3',
+  default: Env.getOrFail('DRIVE_DISK'),
 
   disks: {
     /*
