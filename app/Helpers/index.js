@@ -1,7 +1,10 @@
 'use strict'
 
+const fs = require('fs');
+
 const crypto = use('crypto')
 const Helpers = use('Helpers')
+const Drive = use('Drive')
 
 /**
  * Generate random string
@@ -27,55 +30,48 @@ const str_random = async (length = 40) => {
 }
 
 /**
- * Move um unico arquivo para o caminho especificado, se nenhum for especificado
- * então 'public/uploads' será utilizado.
+ * Move um unico arquivo
  * @param { FileJar } file - o arquivo a ser gerenciado
- * @param { string } path - o caminho para onde o arquivo dever ser movido
  * @return { Object<FileJar> }
  */
-const manage_single_upload = async (file, path = null) => {
-  path = path ? path : Helpers.publicPath('uploads')
+const manage_single_upload = async (file) => {
   // gera um nome aleatorio
   const random_name = await str_random(30)
   let filename = `${new Date().getTime()}-${random_name}.${file.subtype}`
 
-  // renomeia o arquivo e move ele para o path
-  await file.move(path, {
-    name: filename
+  const content = fs.readFileSync(file.tmpPath)
+  const fileUrl = await Drive.put(filename, content, {
+    visibility: 'public',
+    contentType: `${file.type}/${file.subtype}`
   })
 
-  return file
+  file.filename = filename
+  file.status = 'moved'
+
+  return { fileJar: file, url: fileUrl }
 }
 
 /**
- * Move multiplos arquivos para o caminho especificado, se nenhum for especificado
- * então 'public/uploads' será utilizado.
+ * Move multiplos arquivos para o caminho especificado
  * @param { FileJar } fileJar
- * @param { string } path
  * @return { Object }
  */
-const manage_multiple_uploads = async (fileJar, path = null) => {
-  path = path ? path : Helpers.publicPath('uploads')
-  let success = [],
+const manage_multiple_uploads = async (fileJar) => {
+  let successes = [],
     errors = []
 
   await Promise.all(fileJar.files.map(async file => {
-    let randomName = await str_random(30)
-    let filename = `${new Date().getTime()}-${randomName}.${file.subtype}`
-    // move o arquivo
-    await file.move(path, {
-      name: filename
-    })
+    const upload = await manage_single_upload(file)
 
     // verificamos se moveu mesmo
-    if(file.moved()) {
-      success.push(file)
+    if(upload.fileJar.moved()) {
+      successes.push(upload)
     } else {
-      errors.push(file.error())
+      errors.push(upload.error())
     }
   }))
 
-  return { success, errors }
+  return { successes, errors }
 }
 
 module.exports = {

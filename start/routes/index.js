@@ -16,8 +16,9 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
+Route.get('/uploads/:name', 'UploadController.show')
 Route.get('v1/me', 'UserController.me').as('me').middleware('auth')
-Route.post('v1/pay/notification', 'Pay/NotificationController.store').as('me')
+Route.post('v1/pay/notification', 'Pay/NotificationController.store').as('pay.notification')
 
 /*
 * importa as rotas de Autenticação

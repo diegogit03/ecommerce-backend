@@ -4,11 +4,11 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const fs = use('fs')
+const Drive = use('Drive')
 const Helpers = use('Helpers')
 
 const Image = use('App/Models/Image')
-const { manage_single_upload, manage_multiple_upload } = use('App/Helpers')
+const { manage_single_upload, manage_multiple_uploads } = use('App/Helpers')
 const ImageTransformer = use('App/Transformers/Admin/ImageTransformer')
 
 /**
@@ -51,16 +51,17 @@ class ImageController {
       })
 
       let images = []
+
       // caso seja um unico arquivo - manage_single_upload
       // caso seja vários arquivos - manage_multiple_upload
       if(!fileJar.files) {
         const file = await manage_single_upload(fileJar)
-        if(file.moved()) {
+        if(file.fileJar.moved()) {
           const image = await Image.create({
-            path: file.fileName,
-            size: file.size,
-            original_name: file.clientName,
-            extension: file.subtype
+            filename: file.fileJar.filename,
+            size: file.fileJar.size,
+            original_name: file.fileJar.clientName,
+            extension: file.fileJar.subtype
           })
 
           const transformedImage = await transform.item(image, ImageTransformer)
@@ -71,18 +72,18 @@ class ImageController {
         }
 
         return response.status(400).send({
-          message: 'Não foi possível processar esta imagem no momento!'
+          message: 'Não foi possível processar está imagem no momento!'
         })
       }
 
-      let files = await manage_multiple_upload(fileJar)
+      let files = await manage_multiple_uploads(fileJar)
 
       await Promise.all(files.successes.map(async file => {
         const image = await Image.create({
-          path: file.fileName,
-          size: file.size,
-          original_name: file.clientName,
-          extension: file.subtype
+          filename: file.fileJar.filename,
+          size: file.fileJar.size,
+          original_name: file.fileJar.clientName,
+          extension: file.fileJar.subtype
         })
 
         const transformedImage = await transform.item(image, ImageTransformer)
@@ -92,6 +93,7 @@ class ImageController {
 
       return response.status(201).json({ successes: images, errors: files.errors })
     } catch(error) {
+      console.log(error)
       return response.status(400).send({
         message: 'Não foi possivel processar sua solicitação'
       })
@@ -145,9 +147,7 @@ class ImageController {
   async destroy ({ params: { id }, request, response }) {
     const image = await Image.findOrFail(id)
     try {
-      let filepath = Helpers.publicPath(`uploads/${image.path}`)
-
-      await fs.unlinkSync(filepath)
+      await Drive.delete(image.filename)
       await image.delete()
 
       return response.status(204).send()
