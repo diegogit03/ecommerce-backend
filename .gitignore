@@ -6,5 +6,6 @@ public/uploads
 tmp
 
 .env
+.env.testing
 
 database/*.sqlite
