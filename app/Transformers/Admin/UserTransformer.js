@@ -2,6 +2,7 @@
 
 const BumblebeeTransformer = use('Bumblebee/Transformer')
 const ImageTransformer = use('App/Transformers/Admin/ImageTransformer')
+const AddressTransformer = use('App/Transformers/Admin/AddressTransformer')
 
 /**
  * UserTransformer class
@@ -11,7 +12,7 @@ const ImageTransformer = use('App/Transformers/Admin/ImageTransformer')
  */
 class UserTransformer extends BumblebeeTransformer {
   static get defaultInclude () {
-    return ['image']
+    return ['image', 'addresses']
   }
 
   /**
@@ -28,6 +29,10 @@ class UserTransformer extends BumblebeeTransformer {
 
   includeImage (model) {
     return this.item(model.getRelated('image'), ImageTransformer)
+  }
+
+  includeAddresses (model) {
+    return this.item(model.getRelated('addresses'), AddressTransformer)
   }
 }
 

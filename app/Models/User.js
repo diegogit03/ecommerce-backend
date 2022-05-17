@@ -60,6 +60,10 @@ class User extends Model {
     return this.belongsToMany('App/Models/Coupon')
   }
   
+  addresses () {
+    return this.hasMany('App/Models/Address')
+  }
+
 }
 
 module.exports = User

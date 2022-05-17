@@ -6,6 +6,7 @@ const UserTransformer = use('App/Transformers/Admin/UserTransformer')
 const OrderItemTransformer = use('App/Transformers/Admin/OrderItemTransformer')
 const DiscountTransformer = use('App/Transformers/Admin/DiscountTransformer')
 const CouponTransformer = use('App/Transformers/Admin/CouponTransformer')
+const AddressTransformer = use('App/Transformers/Admin/AddressTransformer')
 
 /**
  * OrderTransformer class
@@ -15,7 +16,7 @@ const CouponTransformer = use('App/Transformers/Admin/CouponTransformer')
  */
 class OrderTransformer extends BumblebeeTransformer {
   static get availableInclude () {
-    return ['user', 'coupons', 'items', 'discounts'];
+    return ['user', 'coupons', 'items', 'discounts', 'address'];
   }
 
   /**
@@ -51,6 +52,10 @@ class OrderTransformer extends BumblebeeTransformer {
 
   includeCoupons (order) {
     return this.collection(order.getRelated('coupons'), CouponTransformer)
+  }
+
+  includeAddress (order) {
+    return this.collection(order.getRelated('address'), AddressTransformer)
   }
 }
 

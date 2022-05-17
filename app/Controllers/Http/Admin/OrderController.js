@@ -58,7 +58,7 @@ class OrderController {
     const trx = await Database.beginTransaction()
 
     try {
-      const { user_id, items, status } = request.all()
+      const { user_id, address_id, items, status } = request.all()
 
       let order = await Order.create({ user_id, status }, trx)
       const service = new Service(order, trx)
@@ -91,7 +91,7 @@ class OrderController {
   async show ({ params: { id }, response, transform }) {
     let order = await Order.findOrFail(id)
     order = await transform
-      .include('user,items,discounts')
+      .include('user,items,discounts,address')
       .item(order, OrderTransformer)
 
     return order
@@ -110,10 +110,10 @@ class OrderController {
     const trx = await Database.beginTransaction()
 
     try {
-      const { user_id, items, status } = request.all()
+      const { user_id, items, status, address_id } = request.all()
       const service = new Service(order, trx)
 
-      order.merge({ user_id, status })
+      order.merge({ user_id, status, address_id })
 
       await service.updateItems(items)
       await order.save()
