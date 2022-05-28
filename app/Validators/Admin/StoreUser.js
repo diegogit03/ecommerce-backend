@@ -16,6 +16,14 @@ class StoreUser {
       image_id: 'exists:images,id'
     }
   }
+
+  get messages () {
+    return {
+      'email.unique': 'Este E-mail ja existe!',
+      'email.required': 'O E-mail é obrigatório!',
+      'image_id.exists': 'A imagem não existe!'
+    }
+  }
 }
 
 module.exports = StoreUser

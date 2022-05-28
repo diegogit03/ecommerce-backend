@@ -12,12 +12,8 @@ const CityTransformer = use('App/Transformers/Admin/CityTransformer')
  * @constructor
  */
 class AddressTransformer extends BumblebeeTransformer {
-  static get defaultInclude () {
-    return ['city']
-  }
-
   static get availableInclude () {
-    return ['user']
+    return ['user', 'city']
   }
 
   transform (model) {
@@ -29,12 +25,12 @@ class AddressTransformer extends BumblebeeTransformer {
     }
   }
 
-  includeUser (address) {
-    return this.item(address.getRelated('user'), UserTransformer)
+  includeUser (model) {
+    return this.item(model.getRelated('user'), UserTransformer)
   }
 
-  includeCity (address) {
-    return this.item(address.getRelated('city'), CityTransformer)
+  includeCity (model) {
+    return this.item(model.getRelated('city'), CityTransformer)
   }
 }
 

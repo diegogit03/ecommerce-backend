@@ -3,8 +3,18 @@
 class StoreOrder {
   get rules () {
     return {
-      'items.*.product_id': 'exists:products,id',
-      'items.*.quantity': 'min:1'
+      'address_id': 'exists:addresses,id',
+      'items.*.product_id': 'required|exists:products,id',
+      'items.*.quantity': 'above:1'
+    }
+  }
+
+  get messages () {
+    return {
+      'items.*.product_id.exists': 'Este produto não existe!',
+      'items.*.product_id.required': 'É necessario um produto por item',
+      'items.*.quantity.min': 'A quantidade de um item está abaixo do minimo!',
+      'address_id.exists': 'Este endereço não existe!'
     }
   }
 }

@@ -86,6 +86,29 @@ test('it should return 400 when required data is not provided', async ({ assert,
   assert.property(response.body, 'errors')
 })
 
+test('it should return 400 when password and password_confirmation is not equal', async ({ assert, client }) => {
+  const payload = {
+    name: 'test',
+    surname: 'test',
+    email: 'test@email.com',
+    password: 'secret'
+  }
+
+  const response = await client
+    .post('v1/auth/register')
+    .send({
+      ...payload,
+      password_confirmation: 'test'
+    })
+    .end()
+
+  response.assertStatus(400)
+  assert.property(response.body, 'errors')
+  assert.equal(response.body.errors.length, 1)
+  assert.equal(response.body.errors[0].validation, 'confirmed')
+  assert.equal(response.body.errors[0].field, 'password')
+})
+
 test('it should return 400 when email is invalid', async ({ assert, client }) => {
   const payload = {
     name: 'test',
@@ -104,6 +127,9 @@ test('it should return 400 when email is invalid', async ({ assert, client }) =>
 
   response.assertStatus(400)
   assert.property(response.body, 'errors')
+  assert.equal(response.body.errors.length, 1)
+  assert.equal(response.body.errors[0].validation, 'email')
+  assert.equal(response.body.errors[0].field, 'email')
 })
 
 test('it should return 400 when email already exists', async ({ assert, client }) => {
@@ -126,6 +152,9 @@ test('it should return 400 when email already exists', async ({ assert, client }
 
   response.assertStatus(400)
   assert.property(response.body, 'errors')
+  assert.equal(response.body.errors.length, 1)
+  assert.equal(response.body.errors[0].validation, 'unique')
+  assert.equal(response.body.errors[0].field, 'email')
 })
 
 test('it should refresh a token', async ({ assert, client }) => {
