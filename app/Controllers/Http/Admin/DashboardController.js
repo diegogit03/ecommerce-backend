@@ -22,7 +22,9 @@ class DashboardController {
       moment().format(DATE_FORMAT)
     ])
 	
-	const chart = await Database.select('created_at').from('orders');
+	  const chart = await Database
+      .select('DAYNAME(ord.created_at)')
+      .from('orders as ord', '');
 
     const subtotal = await Database.from('order_items').getSum('subtotal')
     const discounts = await Database.from('coupon_order').getSum('discount')
