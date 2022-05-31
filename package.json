@@ -1,8 +1,8 @@
 {
-  "name": "souza-api",
+  "name": "ecommerce-api",
   "version": "4.1.0",
   "adonis-version": "4.1.0",
-  "description": "Souza api",
+  "description": "Ecommerce Api",
   "main": "index.js",
   "scripts": {
     "start": "ENV_SILENT=true node server.js",
@@ -45,5 +45,9 @@
   },
   "autoload": {
     "App": "./app"
+  },
+  "engines": {
+    "node": "14.15.3",
+    "npm": "6.14.9"
   }
 }
