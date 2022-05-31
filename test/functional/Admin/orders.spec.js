@@ -6,61 +6,11 @@ const { test, trait } = AdminOrderSuite
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
-const Role = use('Role')
 const Order = use('App/Models/Order')
 
 AdminOrderSuite.timeout(0)
 
-const createAdmin = async () => {
-  const adminRole = await Role.create({
-    name: 'Admin',
-    slug: 'admin',
-    description: 'Administrador do sistema!'
-  })
-
-  const user = await Factory
-    .model('App/Models/User')
-    .create()
-
-  user.roles().attach([adminRole.id])
-
-  return user
-}
-
-const createOrder = async (user, quantity = 1, status = 'finished') => {
-  const product = await Factory.model('App/Models/Product').make()
-  const item = await Factory.model('App/Models/OrderItem').make()
-
-  const { id: state_id } = await Factory.model('App/Models/State').create()
-  const { id: city_id } = await Factory.model('App/Models/City').create({ state_id })
-  const address = await Factory.model('App/Models/Address').make({ city_id, user_id: user.id })
-
-  const mountOrder = async (order) => {
-    await item.product().associate(product)
-    await order.items().save(item)
-    await order.address().associate(address)
-  }
-
-  if (quantity > 1) {
-    const orders = await Factory
-      .model('App/Models/Order')
-      .createMany(quantity, { status })
-
-    await Promise.all(
-      orders.map(order => mountOrder(order))
-    )
-
-    return orders
-  }
-
-  const order = await Factory
-    .model('App/Models/Order')
-    .create({ status })
-
-  await mountOrder(order)
-
-  return order
-}
+const { createAdmin, createOrder } = require('../helpers')
 
 trait('Test/ApiClient')
 trait('Auth/Client')
