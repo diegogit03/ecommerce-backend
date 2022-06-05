@@ -7,6 +7,8 @@
 const MercadoPago = require('mercadopago')
 const { uuid } = require('uuidv4')
 
+const { getTransaction } = use('App/Helpers/database')
+
 const Database = use('Database')
 const Ws = use('Ws')
 const Env = use('Env')
@@ -22,6 +24,26 @@ MercadoPago.configure({
   sandbox: Env.get('MP_ENV') === 'production' ? false : true,
   access_token: Env.get('MP_ACCESS_TOKEN')
 })
+
+const generatePaymentFor = async (items, products, client, idToPay) => {
+  const itemsToMercadoPago = items.map(item => {
+  const product = products.find(product => product.id == item.product_id)
+
+    return {
+      quantity: item.quantity,
+      currency_id: 'BRL',
+      unit_price: parseFloat(product.price)
+    }
+  })
+
+  const payment = await MercadoPago.preferences.create({
+    items: [...itemsToMercadoPago],
+    payer: {email: client.email},
+    external_reference: idToPay
+  })
+
+  return payment
+}
 
 /**
  * Resourceful controller for interacting with orders
@@ -66,7 +88,7 @@ class OrderController {
    */
   async store ({ request, response, auth, transform }) {
     const { address_id } = request.all()
-    const trx = await Database.beginTransaction()
+    const trx = await getTransaction()
     const idToPay = '' + uuid()
 
     try {
@@ -92,23 +114,7 @@ class OrderController {
 
       const products = (await Product.all()).toJSON()
 
-      const itemsToMercadoPago = items.map(item => {
-        const product = products.find(product => product.id == item.product_id)
-
-        return {
-          id: idToPay,
-          description: 'Um Produto na Dog Pets',
-          quantity: item.quantity,
-          currency_id: 'BRL',
-          unit_price: parseFloat(product.price)
-        }
-      })
-
-      const payment = await MercadoPago.preferences.create({
-        items: [...itemsToMercadoPago],
-        payer: {email: client.email},
-        external_reference: idToPay
-      })
+      const payment = await generatePaymentFor(items, products, client, idToPay)
 
       await trx.commit()
 
@@ -139,8 +145,10 @@ class OrderController {
     const result = await Order.query()
       .where('user_id', client.id)
       .where('id', id)
-      .first()
-    const order = await transform.item(result, OrderTransformer)
+      .firstOrFail()
+    const order = await transform
+      .include('user,items,discounts,address.city')
+      .item(result, OrderTransformer)
 
     return order
   }

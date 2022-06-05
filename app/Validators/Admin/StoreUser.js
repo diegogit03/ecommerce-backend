@@ -8,7 +8,7 @@ class StoreUser {
     if (userID) {
       rule = `unique:users,email,id,${userID}`
     } else {
-      rule = `unique:users,email|required`
+      rule = `required|unique:users,email`
     }
 
     return {

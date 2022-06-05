@@ -33,6 +33,7 @@ exports.createOrder = async (user, quantity = 1, status = 'finished') => {
     await item.product().associate(product)
     await order.items().save(item)
     await order.address().associate(address)
+    await order.user().associate(user)
   }
 
   if (quantity > 1) {

@@ -4,7 +4,7 @@
 const Route = use('Route')
 
 Route.group(() => {
-  Route.resource('addresses', 'AddressController').middleware(['auth'])
+  Route.resource('addresses', 'AddressController').apiOnly().middleware(['auth'])
 
   /*
   * Product Resource Routes
@@ -15,10 +15,9 @@ Route.group(() => {
   /*
   * Order resource Routes
   */
-  Route.get('orders', 'OrderController.index').middleware(['auth'])
-  Route.get('order/:id', 'OrderController.show').middleware(['auth'])
-  Route.post('orders', 'OrderController.store')
-  Route.put('orders/:id', 'OrderController.update')
+  Route.resource('orders', 'OrderController').apiOnly().middleware(['auth']).validator(new Map([
+    [['orders.store', 'orders.update'], ['Admin/StoreOrder']]
+  ]))
 })
   .prefix('v1')
   .namespace('Client')

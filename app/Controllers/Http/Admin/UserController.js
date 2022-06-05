@@ -47,7 +47,7 @@ class UserController {
     try {
       const userData = request.only([
         'name',
-        'username',
+        'surname',
         'email',
         'password',
         'image_id'
@@ -58,6 +58,7 @@ class UserController {
 
       return response.status(201).send(user)
     } catch(error) {
+      console.log(error)
       return response.status(400).send({ message: 'Não foi possivel criar este usuario no momento' })
     }
   }

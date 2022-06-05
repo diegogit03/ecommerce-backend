@@ -10,7 +10,7 @@ const User = use('App/Models/User')
 
 AdminUserSuite.timeout(0)
 
-const { createAdmin } =require('../helpers')
+const { createAdmin } = require('../helpers')
 
 trait('Test/ApiClient')
 trait('Auth/Client')

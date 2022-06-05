@@ -74,3 +74,7 @@ Factory.blueprint('App/Models/State', faker => {
     name: faker.state({ full: true })
   }
 })
+
+Factory.blueprint('App/Models/Image', faker => {
+  return {}
+})
