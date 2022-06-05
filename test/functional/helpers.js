@@ -5,6 +5,16 @@ const Factory = use('Factory')
 
 const Role = use('Role')
 
+const createAddress = async (user_id) => {
+  const { id: state_id } = await Factory.model('App/Models/State').create()
+  const { id: city_id } = await Factory.model('App/Models/City').create({ state_id })
+  const address = await Factory.model('App/Models/Address').make({ city_id, user_id })
+
+  return address
+}
+
+exports.createAddress = createAddress
+
 exports.createAdmin = async () => {
   const adminRole = await Role.create({
     name: 'Admin',
@@ -25,9 +35,7 @@ exports.createOrder = async (user, quantity = 1, status = 'finished') => {
   const product = await Factory.model('App/Models/Product').make()
   const item = await Factory.model('App/Models/OrderItem').make()
 
-  const { id: state_id } = await Factory.model('App/Models/State').create()
-  const { id: city_id } = await Factory.model('App/Models/City').create({ state_id })
-  const address = await Factory.model('App/Models/Address').make({ city_id, user_id: user.id })
+  const address = await createAddress(user.id)
 
   const mountOrder = async (order) => {
     await item.product().associate(product)
