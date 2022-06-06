@@ -10,7 +10,7 @@ Route.group(() => {
   * Product Resource Routes
   */
   Route.get('products', 'ProductController.index')
-  Route.get('product/:id', 'ProductController.show')
+  Route.get('products/:id', 'ProductController.show')
 
   /*
   * Order resource Routes

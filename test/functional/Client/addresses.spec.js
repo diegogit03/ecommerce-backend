@@ -1,6 +1,6 @@
 'use strict'
 
-const ClientAddressSuite = use('Test/Suite')('Client Address')
+const ClientAddressSuite = use('Test/Suite')('Client Addresses')
 const { test, trait } = ClientAddressSuite
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
@@ -28,7 +28,6 @@ test('it should list all addresses of authenticated user', async ({ client, asse
     .create()
 
   const addressOfAdmin = await createAddress(admin.id)
-  const addressOfClient = await createAddress(user.id)
 
   const response = await client
     .get('v1/addresses/')
