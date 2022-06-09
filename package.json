@@ -1,8 +1,8 @@
 {
-  "name": "souza-api",
+  "name": "ecommerce-api",
   "version": "4.1.0",
   "adonis-version": "4.1.0",
-  "description": "Souza api",
+  "description": "Ecommerce Api",
   "main": "index.js",
   "scripts": {
     "start": "ENV_SILENT=true node server.js",
@@ -33,13 +33,21 @@
     "adonis-bumblebee": "^2.2.0",
     "aws-sdk": "^2.1108.0",
     "mercadopago": "^1.5.12",
-    "moment": "^2.29.1",
+    "moment": "^2.29.3",
     "mysql": "^2.18.1",
     "pg": "^8.7.3",
     "uuidv4": "^6.2.12"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@adonisjs/vow": "^1.0.17",
+    "sinon": "^14.0.0",
+    "sqlite3": "^5.0.8"
+  },
   "autoload": {
     "App": "./app"
+  },
+  "engines": {
+    "node": "14.15.3",
+    "npm": "6.14.9"
   }
 }

@@ -18,7 +18,7 @@ class OrderSchema extends Schema {
 
   down () {
     this.table('orders', (table) => {
-      table.dropColumn('address_id')
+      table.dropForeign('address_id')
     })
   }
 }

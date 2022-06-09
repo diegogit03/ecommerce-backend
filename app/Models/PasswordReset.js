@@ -18,7 +18,6 @@ class PasswordReset extends Model {
 
     }
 
-    // formata os valores para o padrão do mysql
     static get dates(){
       return ['created_at', 'updated_at', 'expires_at']
     }

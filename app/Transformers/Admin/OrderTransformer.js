@@ -55,7 +55,7 @@ class OrderTransformer extends BumblebeeTransformer {
   }
 
   includeAddress (order) {
-    return this.collection(order.getRelated('address'), AddressTransformer)
+    return this.item(order.getRelated('address'), AddressTransformer)
   }
 }
 
