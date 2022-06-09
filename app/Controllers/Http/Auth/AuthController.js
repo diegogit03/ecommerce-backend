@@ -1,6 +1,6 @@
 'use strict'
 
-const Database = use('Database')
+const { getTransaction } = use('App/Helpers/database')
 
 const User = use('App/Models/User')
 const Role = use('Role')
@@ -10,7 +10,7 @@ const Ws = use('Ws')
 class AuthController {
 
   async register({ request, response }) {
-    const trx = await Database.beginTransaction()
+    const trx = await getTransaction()
 
     try {
 
@@ -38,6 +38,7 @@ class AuthController {
 
     } catch(error) {
       await trx.rollback()
+      console.log(error)
       return response.status(400).send({
         message: 'Erro ao realizar cadastro!'
       })

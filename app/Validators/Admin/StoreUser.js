@@ -8,12 +8,20 @@ class StoreUser {
     if (userID) {
       rule = `unique:users,email,id,${userID}`
     } else {
-      rule = `unique:users,email|required`
+      rule = `required|unique:users,email`
     }
 
     return {
       email: rule,
       image_id: 'exists:images,id'
+    }
+  }
+
+  get messages () {
+    return {
+      'email.unique': 'Este E-mail ja existe!',
+      'email.required': 'O E-mail é obrigatório!',
+      'image_id.exists': 'A imagem não existe!'
     }
   }
 }

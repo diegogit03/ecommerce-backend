@@ -6,26 +6,30 @@ const Model = use('Model')
 class Order extends Model {
 
     static boot(){
-        super.boot()
+       super.boot()
 
-        this.addHook('afterFind', 'OrderHook.updateValues')
-        this.addHook('afterPaginate', 'OrderHook.updateCollectionValues')
+       this.addHook('afterFind', 'OrderHook.updateValues')
+       this.addHook('afterPaginate', 'OrderHook.updateCollectionValues')
     }
 
     items(){
-        return this.hasMany('App/Models/OrderItem')
+       return this.hasMany('App/Models/OrderItem')
     }
 
     coupons(){
-        return this.belongsToMany('App/Models/Coupon')
+       return this.belongsToMany('App/Models/Coupon')
     }
 
     discounts(){
-        return this.hasMany('App/Models/Discount')
+       return this.hasMany('App/Models/Discount')
     }
 
     user(){
-        return this.belongsTo('App/Models/User', 'user_id', 'id')
+       return this.belongsTo('App/Models/User', 'user_id', 'id')
+    }
+
+    address(){
+       return this.belongsTo('App/Models/Address')
     }
 
 }

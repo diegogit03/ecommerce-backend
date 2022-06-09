@@ -46,7 +46,7 @@ class AddressController {
 
     const address = await Address.create({ ...payload, user_id: client.id, city_id: city.id })
 
-    return address
+    return response.status(201).json(address)
   }
 
   /**

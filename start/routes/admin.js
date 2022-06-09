@@ -8,8 +8,7 @@ Route.group(() => {
   * Category resource routes
   */
   Route.resource('categories', 'CategoryController').apiOnly().validator(new Map([
-    [['categories.store'], ['Admin/StoreCategory']],
-    [['categories.update'], ['Admin/StoreCategory']]
+    [['categories.store', 'categories.update'], ['Admin/StoreCategory']]
   ]))
 
   /*
@@ -27,9 +26,9 @@ Route.group(() => {
   */
   Route.post('orders/:id/discount', 'OrderController.applyDiscount')
   Route.delete('orders/:id/discount', 'OrderController.removeDiscount')
-  Route.resource('orders', 'OrderController').apiOnly().validator(new Map(
-    [[['orders.store'], ['Admin/StoreOrder']]]
-  ))
+  Route.resource('orders', 'OrderController').apiOnly().validator(new Map([
+    [['orders.store', 'orders.update'], ['Admin/StoreOrder']],
+  ]))
 
   /*
   * Image resource routes
@@ -40,8 +39,7 @@ Route.group(() => {
   * User resource routes
   */
   Route.resource('users', 'UserController').apiOnly().validator(new Map(
-    [[['users.store'], ['Admin/StoreUser']]],
-    [[['users.update'], ['Admin/StoreUser']]]
+    [[['users.store', 'users.update'], ['Admin/StoreUser']]],
   ))
 
   Route.get('dashboard', 'DashboardController.index').as('dashboard')

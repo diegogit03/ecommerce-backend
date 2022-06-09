@@ -4,6 +4,8 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const { getTransaction } = use('App/Helpers/database')
+
 const Order = use('App/Models/Order')
 const Coupon = use('App/Models/Coupon')
 const Discount = use('App/Models/Discount')
@@ -55,12 +57,12 @@ class OrderController {
    * @param {Response} ctx.response
    */
   async store ({ request, response, transform }) {
-    const trx = await Database.beginTransaction()
+    const trx = await getTransaction()
 
     try {
       const { user_id, address_id, items, status } = request.all()
 
-      let order = await Order.create({ user_id, status }, trx)
+      let order = await Order.create({ user_id, status, address_id }, trx)
       const service = new Service(order, trx)
 
       if(items && items.length > 0)
@@ -69,11 +71,14 @@ class OrderController {
       await trx.commit()
 
       order = await Order.find(order.id)
-      order = await transform.include('user,items').item(order, OrderTransformer)
+      await order.load('address.city')
+
+      order = await transform.include('user,items,address.city').item(order, OrderTransformer)
 
       return response.status(201).json(order)
     } catch(error) {
 
+      console.log(error)
       await trx.rollback()
       return response.status(400).json({
         message: 'Não foi possivel criar o pedido no momento!'
@@ -91,7 +96,7 @@ class OrderController {
   async show ({ params: { id }, response, transform }) {
     let order = await Order.findOrFail(id)
     order = await transform
-      .include('user,items,discounts,address')
+      .include('user,items,discounts,address.city')
       .item(order, OrderTransformer)
 
     return order
@@ -107,7 +112,7 @@ class OrderController {
    */
   async update ({ params: { id }, request, response, transform }) {
     let order = await Order.findOrFail(id)
-    const trx = await Database.beginTransaction()
+    const trx = await getTransaction()
 
     try {
       const { user_id, items, status, address_id } = request.all()
@@ -119,7 +124,7 @@ class OrderController {
       await order.save()
       await trx.commit()
 
-      order = await transform.include('user,items,discounts,coupons').item(order, OrderTransformer)
+      order = await transform.include('user,items,discounts,coupons,address.city').item(order, OrderTransformer)
 
       return order
     } catch (error) {
@@ -141,11 +146,12 @@ class OrderController {
    */
   async destroy ({ params: { id }, request, response }) {
     const order = await Order.findOrFail(id)
-    const trx = await Database.beginTransaction()
+    const trx = await getTransaction()
+
     try {
       await order.items().delete(trx)
-      await order.coupons().delete()
-      await order.delete()
+      await order.coupons().delete(trx)
+      await order.delete(trx)
       await trx.commit()
       return response.status(204).send()
     } catch (error) {
