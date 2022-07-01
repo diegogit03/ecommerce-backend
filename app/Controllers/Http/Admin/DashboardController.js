@@ -49,23 +49,24 @@ class DashboardController {
     let dayNameQuery = getDayNameQuery('ord.created_at')
     let dayQuery = getDayQuery('ord.created_at')
 
-    const chartquery = `
-      SELECT ${dayNameQuery} AS date, (SUM(item.subtotal) - COALESCE(SUM(coupon_order.discount), 0)) AS total
-        FROM orders AS ord INNER JOIN order_items as item ON item.order_id = ord.id LEFT OUTER JOIN coupon_order ON coupon_order.order_id = ord.id
-        WHERE ord.created_at BETWEEN ? AND ? AND ord.status = 'finished'
-        GROUP BY ${dayQuery};
-    `
+    // TODO: make chart query
+    // const chartquery = `
+    //   SELECT ${dayNameQuery} AS date, (SUM(item.subtotal) - COALESCE(SUM(coupon_order.discount), 0)) AS total
+    //     FROM orders AS ord INNER JOIN order_items as item ON item.order_id = ord.id LEFT OUTER JOIN coupon_order ON coupon_order.order_id = ord.id
+    //     WHERE ord.created_at BETWEEN ? AND ? AND ord.status = 'finished'
+    //     GROUP BY ${dayQuery};
+    // `
 
-	  const chart = await Database.raw(chartquery, [
-      moment().subtract(1, 'week').format(DATE_FORMAT),
-      moment().format(DATE_FORMAT)
-    ])
+	  // const chart = await Database.raw(chartquery, [
+    //   moment().subtract(1, 'week').format(DATE_FORMAT),
+    //   moment().format(DATE_FORMAT)
+    // ])
 
     const subtotal = await Database.from('order_items').getSum('subtotal')
     const discounts = await Database.from('coupon_order').getSum('discount')
     const revenues = subtotal - discounts
 
-    return { users, orders, products, revenues, chart }
+    return { users, orders, products, revenues }
   }
 
 }
