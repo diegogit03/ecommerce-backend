@@ -26,6 +26,9 @@ function getDayQuery (column) {
   let query = ''
 
   switch (Database.connection().connectionClient) {
+    case 'pg':
+      query = `TO_CHAR(${column}, 'TMDay')`
+      break;
     case 'sqlite3':
       query = column
       break;
