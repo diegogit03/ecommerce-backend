@@ -7,7 +7,7 @@ const Database = use('Database')
  */
 const getTransaction = async () => {
   const globalTrx = Database.connection()._globalTrx
-  return globalTrx ? { commit () {}, rollback () {} } : Database.beginTrasaction()
+  return globalTrx ? { commit () {}, rollback () {} } : await Database.beginTransaction()
 }
 
 module.exports = {
