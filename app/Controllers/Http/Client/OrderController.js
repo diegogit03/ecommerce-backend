@@ -5,7 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const MercadoPago = require('mercadopago')
-const { v4 } = require('uuidv4')
+const { uuid } = require('uuidv4')
 
 const { getTransaction } = use('App/Helpers/database')
 
@@ -89,7 +89,7 @@ class OrderController {
   async store ({ request, response, auth, transform }) {
     const { address_id } = request.all()
     const trx = await getTransaction()
-    const idToPay = '' + v4()
+    const idToPay = '' + uuid()
 
     try {
       const items = request.input('items')

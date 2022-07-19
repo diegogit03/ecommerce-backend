@@ -32,7 +32,7 @@ class UserTransformer extends BumblebeeTransformer {
   }
 
   includeAddresses (model) {
-    return this.item(model.getRelated('addresses'), AddressTransformer)
+    return this.collection(model.getRelated('addresses'), AddressTransformer)
   }
 }
 

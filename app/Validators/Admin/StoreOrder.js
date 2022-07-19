@@ -5,7 +5,7 @@ class StoreOrder {
     return {
       'address_id': 'exists:addresses,id',
       'items.*.product_id': 'required|exists:products,id',
-      'items.*.quantity': 'above:1'
+      'items.*.quantity': 'above:0'
     }
   }
 
