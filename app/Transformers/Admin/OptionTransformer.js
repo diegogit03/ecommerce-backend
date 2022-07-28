@@ -1,18 +1,23 @@
 'use strict'
 
+
 const BumblebeeTransformer = use('Bumblebee/Transformer')
 const ImageTransformer = use('App/Transformers/Admin/ImageTransformer')
 const SelectionTransformer = use('App/Transformers/Admin/SelectionTransformer')
 
 /**
- * ProductTransformer class
+ * OptionTransformer class
  *
- * @class ProductTransformer
+ * @class OptionTransformer
  * @constructor
  */
-class ProductTransformer extends BumblebeeTransformer {
+class OptionTransformer extends BumblebeeTransformer {
   static get defaultInclude () {
-    return ['image', 'selections']
+    return ['image']
+  }
+
+  static get availableInclude () {
+    return ['selection'];
   }
 
   /**
@@ -20,10 +25,8 @@ class ProductTransformer extends BumblebeeTransformer {
    */
   transform (model) {
     return {
-      id: model.id,
-      name: model.name,
-      description: model.description,
-      price: model.price,
+     description: model.description,
+     additional: model.additional
     }
   }
 
@@ -31,9 +34,9 @@ class ProductTransformer extends BumblebeeTransformer {
     return this.item(model.getRelated('image'), ImageTransformer)
   }
 
-  includeSelections (model) {
-    return this.collection(model.getRelated('selections'), SelectionTransformer)
+  includeSelection (model) {
+    return this.item(model.getRelated('selection'), SelectionTransformer)
   }
 }
 
-module.exports = ProductTransformer
+module.exports = OptionTransformer

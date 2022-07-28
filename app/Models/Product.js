@@ -5,46 +5,21 @@ const Model = use('Model')
 
 class Product extends Model {
 
-    /*
-    
-        Relacionamento entre produto e imagem
-    
-    */
+  image () {
+    return this.belongsTo('App/Models/Image')
+  }
 
-    image(){
-        return this.belongsTo('App/Models/Image')
-    }
+  categories () {
+    return this.belongsToMany('App/Models/Category')
+  }
 
-    /*
-    
-        Relacionamento entre produtos e imagens
-        Galeria de imagens de produtos
-    
-    */
+  coupons () {
+    return this.belongsToMany('App/Models/Coupon')
+  }
 
-    images(){
-        return this.belongsToMany('App/Models/Image')
-    }
-
-    /*
-    
-        Relacionamento entre produtos e categorias
-    
-    */
-
-    categories(){
-        return this.belongsToMany('App/Models/Category')
-    }
-
-    /*
-    
-        Relacionamento entre produtos e cupons de desconto
-    
-    */
-
-    coupons(){
-        return this.belongsToMany('App/Models/Coupon')
-    }
+  selections () {
+    return this.hasMany('App/Models/Selection')
+  }
 
 }
 

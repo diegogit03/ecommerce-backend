@@ -5,6 +5,19 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Product = use('App/Models/Product')
+const { getTransaction } = use('App/Helpers/database')
+
+const createSelections = async (selections, product, trx) => {
+  const selectionsPromises = selections.map(({ description, options }) => new Promise((resolve, reject) => {
+    product.selections().create({ description }, trx)
+      .then(selection => selection.options().createMany(options, trx))
+      .then(selection => resolve(selection))
+      .catch(error => reject(error))
+  }))
+
+  await Promise.all(selectionsPromises)
+}
+
 const ProductTransformer = use('App/Transformers/Admin/ProductTransformer')
 
 /**
@@ -43,8 +56,10 @@ class ProductController {
    * @param {Response} ctx.response
    */
   async store ({ request, response, transform }) {
+    const trx = await getTransaction()
+
     try {
-      const { name, description, price, image_id } = request.all()
+      const { name, description, price, image_id, selections } = request.all()
 
       let product = await Product.create({
         name,
@@ -52,10 +67,16 @@ class ProductController {
         price,
         image_id
       })
+
+      await createSelections(selections, product, trx)
+
+      await trx.commit()
+
       product = await transform.item(product, ProductTransformer)
 
       return response.status(201).send(product)
     } catch(error) {
+      await trx.rollback()
       response.status(400).send({ message: 'Não foi possivel criar o produto neste momento' })
     }
   }
@@ -86,17 +107,27 @@ class ProductController {
    */
   async update ({ params: { id }, request, response, transform }) {
     let product = await Product.findOrFail(id)
+    const trx = await getTransaction()
 
     try {
-      const { name, description, price, image_id } = request.all()
+      const { name, description, price, image_id, selections } = request.all()
       product.merge({ name, description, price, image_id })
 
-      await product.save()
+      await product.selections().delete(trx)
+      await createSelections(selections, product, trx)
+
+      await product.save(trx)
+      await trx.commit()
+
       product = await transform.item(product, ProductTransformer)
 
       return product
     } catch(error) {
+
+      console.log(error)
+      await trx.rollback()
       return response.status(400).send({ message: 'Não foi possivel atualizar este produto!' })
+
     }
   }
 
