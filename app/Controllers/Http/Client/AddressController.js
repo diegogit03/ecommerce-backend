@@ -20,7 +20,7 @@ class AddressController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, auth }) {
+  async index ({ auth }) {
     const client = await auth.getUser()
 
     const addresses = await Address

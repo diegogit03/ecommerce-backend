@@ -25,8 +25,9 @@ class OptionTransformer extends BumblebeeTransformer {
    */
   transform (model) {
     return {
-     description: model.description,
-     additional: model.additional
+      id: model.id,
+      description: model.description,
+      additional: model.additional
     }
   }
 

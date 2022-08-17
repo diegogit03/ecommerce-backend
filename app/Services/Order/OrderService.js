@@ -14,7 +14,10 @@ class OrderService {
       return false;
 
     await this.model.items().delete(this.trx)
-    await this.model.items().createMany(items, this.trx)
+    await Promise.all(items.map(async ({ product_id, quantity, specifications }) => {
+      const createdItem = await this.model.items().create({ product_id, quantity }, this.trx)
+      await createdItem.specifications().createMany(specifications, this.trx)
+    }))
   }
 
   async updateItems(items) {

@@ -19,6 +19,7 @@ class SelectionTransformer extends BumblebeeTransformer {
    */
   transform (model) {
     return {
+      id: model.id,
       description: model.description
     }
   }
