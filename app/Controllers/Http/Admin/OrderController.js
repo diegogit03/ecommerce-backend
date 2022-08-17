@@ -6,6 +6,8 @@
 
 const { getTransaction } = use('App/Helpers/database')
 
+const Ws = use('Ws')
+
 const Order = use('App/Models/Order')
 const Coupon = use('App/Models/Coupon')
 const Discount = use('App/Models/Discount')

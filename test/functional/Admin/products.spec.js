@@ -32,12 +32,14 @@ test('It should store an product', async ({ client }) => {
         options: [
           {
             description: 'Yellow',
-            image_id: productYellowImage.id
+            image_id: productYellowImage.id,
+            additional: 0
           }
         ]
       }
     ]
   }
+
 
   const response = await client
     .post('v1/admin/products/')
@@ -49,13 +51,14 @@ test('It should store an product', async ({ client }) => {
   response.assertJSONSubset({
     name: payload.name,
     description: payload.description,
-    price: productImage.price,
+    price: payload.price,
     selections: [
       {
         description: 'Select a color:',
         options: [
           {
             description: 'Yellow',
+            additional: 0
           }
         ]
       }
