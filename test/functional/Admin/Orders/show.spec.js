@@ -24,6 +24,12 @@ test('it should show an order', async ({ assert, client }) => {
     .end()
 
   response.assertStatus(200)
+  assert.property(response.body, 'id')
+  assert.property(response.body, 'status')
+  assert.property(response.body, 'date')
+  assert.property(response.body, 'qty_items')
+  assert.property(response.body, 'discount')
+  assert.property(response.body, 'subtotal')
   assert.property(response.body, 'items')
   assert.property(response.body, 'address')
   assert.property(response.body.address, 'city')
