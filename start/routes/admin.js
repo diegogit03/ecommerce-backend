@@ -14,7 +14,9 @@ Route.group(() => {
   /*
   * Product resource routes
   */
-  Route.resource('products', 'ProductController').apiOnly()
+  Route.resource('products', 'ProductController').apiOnly().validator(new Map([
+    [['products.store', 'products.update'], ['Admin/StoreProduct']]
+  ]))
 
   /*
   * Coupon resource routes

@@ -33,7 +33,6 @@ const namedMiddleware = {
   auth: 'Adonis/Middleware/Auth'
 }
 
-
 Ws
   .registerGlobal(globalMiddleware)
   .registerNamed(namedMiddleware)

@@ -6,12 +6,11 @@
 
 const { getTransaction } = use('App/Helpers/database')
 
+const Ws = use('Ws')
+
 const Order = use('App/Models/Order')
 const Coupon = use('App/Models/Coupon')
 const Discount = use('App/Models/Discount')
-
-/** @type {import('@adonisjs/lucid/src/Database')} */
-const Database = use('Database')
 
 const Service = use('App/Services/Order/OrderService')
 const OrderTransformer = use('App/Transformers/Admin/OrderTransformer')
@@ -74,6 +73,12 @@ class OrderController {
       await order.load('address.city')
 
       order = await transform.include('user,items,address.city').item(order, OrderTransformer)
+
+      const topic = Ws.getChannel('notifications').topic('notifications')
+
+      if (topic) {
+        topic.broadcast('new:order', order)
+      }
 
       return response.status(201).json(order)
     } catch(error) {

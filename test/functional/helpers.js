@@ -8,7 +8,7 @@ const Role = use('Role')
 const createAddress = async (user_id) => {
   const { id: state_id } = await Factory.model('App/Models/State').create()
   const { id: city_id } = await Factory.model('App/Models/City').create({ state_id })
-  const address = await Factory.model('App/Models/Address').make({ city_id, user_id })
+  const address = await Factory.model('App/Models/Address').create({ city_id, user_id })
 
   return address
 }

@@ -16,7 +16,7 @@ Route.group(() => {
   * Order resource Routes
   */
   Route.resource('orders', 'OrderController').apiOnly().middleware(['auth']).validator(new Map([
-    [['orders.store', 'orders.update'], ['Admin/StoreOrder']]
+    [['orders.store', 'orders.update'], ['Admin/StoreOrder']],
   ]))
 })
   .prefix('v1')

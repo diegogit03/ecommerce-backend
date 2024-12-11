@@ -5,7 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const MercadoPago = require('mercadopago')
-const { v4 } = require('uuidv4')
+const { uuid } = require('uuidv4')
 
 const { getTransaction } = use('App/Helpers/database')
 
@@ -89,7 +89,7 @@ class OrderController {
   async store ({ request, response, auth, transform }) {
     const { address_id } = request.all()
     const trx = await getTransaction()
-    const idToPay = '' + v4()
+    const idToPay = '' + uuid()
 
     try {
       const items = request.input('items')
@@ -102,6 +102,8 @@ class OrderController {
       if (items.length > 0) {
         await service.syncItems(items)
       }
+
+      await trx.commit()
 
       order = await Order.find(order.id)
       order = await transform.include('items').item(order, OrderTransformer)
@@ -116,9 +118,7 @@ class OrderController {
 
       const payment = await generatePaymentFor(items, products, client, idToPay)
 
-      await trx.commit()
-
-      return response.status(201).send({
+      return response.status(201).json({
         ...order,
         pay_url: payment.body.init_point
       })
@@ -171,12 +171,12 @@ class OrderController {
     const trx = await Database.beginTransaction()
 
     try {
-      const { items, status } = request.all()
-      order.merge({ user_id: client.id, status })
+      const { items, address_id } = request.all()
+      order.merge({ user_id: client.id, address_id })
       const service = new Service(order, trx)
 
       await service.updateItems(items)
-      await order.save()
+      await order.save(trx)
       await trx.commit()
 
       order = await transform.include('items,coupons,discounts').item(order, OrderTransformer)
@@ -230,7 +230,7 @@ class OrderController {
     }
   }
 
-  async removeDiscount ({ params: { id }, request, response, transform, auth }) {
+  async removeDiscount ({ params: { id }, request, response }) {
     const { discount_id } = request.all()
     const discount = await Discount.findOrFail(discount_id)
     await discount.delete()
